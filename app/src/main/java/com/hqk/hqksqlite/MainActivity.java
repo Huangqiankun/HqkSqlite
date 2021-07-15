@@ -1,12 +1,15 @@
 package com.hqk.hqksqlite;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermission(this);
-        userDao = BaseDaoFactory.getInstance().createBaseDao(UserDao.class, User.class);
-        photoDao = BaseDaoFactory.getInstance().createBaseDao(PhotoDao.class, Photo.class);
     }
 
 
@@ -69,13 +70,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPermission(
             Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            activity.requestPermissions(new String[]{
+            ActivityCompat.requestPermissions(activity, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, 1);
+            return;
         }
+        createTable();
+
+
     }
 
+    private void createTable() {
+        userDao = BaseDaoFactory.getInstance().createBaseDao(UserDao.class, User.class);
+        photoDao = BaseDaoFactory.getInstance().createBaseDao(PhotoDao.class, Photo.class);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        createTable();
+    }
 }
