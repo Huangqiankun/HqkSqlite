@@ -4,6 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
+import com.hqk.hqksqlite.tools.ContUtils;
+
 public class BaseDaoFactory {
 
     private final String TAG = "hqk";
@@ -20,7 +22,7 @@ public class BaseDaoFactory {
 
     public BaseDaoFactory() {
         //读者可随意更改路径以及对应数据库名，这里演示暂时放在根目录
-        sqliteDatabasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/hqk.db";
+        sqliteDatabasePath = ContUtils.sqliteDatabasePath;
         sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(sqliteDatabasePath, null);
         Log.i(TAG, "sqliteDatabasePath : " + sqliteDatabasePath);
         Log.i(TAG, "sqLiteDatabase : " + sqLiteDatabase.getPath());

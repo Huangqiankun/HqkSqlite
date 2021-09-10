@@ -19,6 +19,8 @@ import com.hqk.hqksqlite.db.dao.PhotoDao;
 import com.hqk.hqksqlite.db.dao.UserDao;
 import com.hqk.hqksqlite.db.model.Photo;
 import com.hqk.hqksqlite.db.model.User;
+import com.hqk.hqksqlite.tools.FileUtil;
+import com.hqk.hqksqlite.update.UpdateManager;
 
 import java.util.ArrayList;
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public void save(View view) {
         User user = new User("hqk", 18);
         long size = userDao.insert(user);
-        Photo photo = new Photo("time", System.currentTimeMillis(), "path");
+        Photo photo = new Photo("time", System.currentTimeMillis(), "path", "names");
         long photoSize = photoDao.insert(photo);
         Toast.makeText(this, "save line :   " + size, Toast.LENGTH_LONG).show();
     }
@@ -65,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
         listUser.clear();
         listUser.addAll(userDao.query(new User()));
         Toast.makeText(this, "查询条数为：" + listUser.size(), Toast.LENGTH_LONG).show();
+    }
+
+    public void downApk(View view) {
+        FileUtil.saveVersionInfo(this, "V007");
+    }
+
+    public void updateDataBase(View view) {
+        UpdateManager updateManager = new UpdateManager();
+        updateManager.startUpdateDb(this);
     }
 
 
@@ -93,4 +104,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         createTable();
     }
+
+
 }

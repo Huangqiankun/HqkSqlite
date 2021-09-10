@@ -38,4 +38,22 @@
         android:onClick="queryList"
         android:gravity="center"
         />
+
+    <Button
+        android:id="@+id/downApk"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="下载apk"
+        android:onClick="downApk"
+        android:gravity="center"
+        />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/updateDataBase"
+    android:text="数据库升级"
+        android:onClick="updateDataBase"
+        android:gravity="center"/>
 </LinearLayout>

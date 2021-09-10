@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateXml>
+    <createVersion version="V007">
+        <createDb name="hqk">
+            <!-- 最新的表结构 -->
+            <sql_createTable>
+                <!--
+                     @DbFiled("time")
+                    private  String time;
+                    @DbFiled("id")
+                    private  Long id;
+                    @DbFiled("path")
+                    private  String path;
+                 -->
+                create table if not exists tb_photo ( id Long,tb_time TEXT ,tb_path TEXT,tb_name TEXT);
+            </sql_createTable>
+
+            <!--            <sql_createTable>-->
+            <!--                &lt;!&ndash;-->
+            <!--                    //    是不是 变量名-->
+            <!--                    @DbPrimaryKey(value = "tb_id", isAuto = true)-->
+            <!--                    @DbFiled("tb_id")-->
+            <!--                    public Integer id;-->
+            <!--                    @DbFiled("tb_name")-->
+            <!--                    public String name;//-->
+            <!--                &ndash;&gt;-->
+            <!--                create table if not exists tb_user ();-->
+
+            <!--            </sql_createTable>-->
+
+        </createDb>
+
+    </createVersion>
+
+    <updateStep versionFrom="V001" versionTo="V006">
+        <updateDb name="hqk">
+            <sql_before>
+                alter table tb_photo rename to bak_tb_photo;
+            </sql_before>
+
+            <sql_after>
+                insert into tb_photo(tb_time,id, tb_path) select tb_time,tb_id,tb_path from bak_tb_photo;
+            </sql_after>
+
+            <sql_after>
+                drop table if exists bak_tb_photo;
+            </sql_after>
+        </updateDb>
+
+
+    </updateStep>
+
+
+    <updateStep versionFrom="V003,V004,V005,V006" versionTo="V007">
+        <updateDb name="hqk">
+            <sql_before>
+                alter table tb_photo rename to bak_tb_photo;
+            </sql_before>
+
+            <sql_after>
+                insert into tb_photo(tb_time,id, tb_path) select tb_time,tb_id,tb_path from bak_tb_photo;
+            </sql_after>
+
+            <sql_after>
+                drop table if exists bak_tb_photo;
+            </sql_after>
+        </updateDb>
+
+    </updateStep>
+
+
+</updateXml>
