@@ -116,7 +116,6 @@ public class DomUtils {
                 }
             }
         }
-
         return cv;
     }
 

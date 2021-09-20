@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <updateXml>
     <createVersion version="V007">
-        <createDb name="hqk">
-            <!-- 最新的表结构 -->
-            <sql_createTable>
+        <createDb name="hqk">  <!-- 要升级数据库对应名 ，如果应用含多个数据库，那么可以创建多个 createDb 标签-->
+            <sql_createTable>  <!-- 创建最新的表结构 -->
                 <!--
                      @DbFiled("time")
                     private  String time;
@@ -14,51 +13,33 @@
                  -->
                 create table if not exists tb_photo ( id Long,tb_time TEXT ,tb_path TEXT,tb_name TEXT);
             </sql_createTable>
-
-            <!--            <sql_createTable>-->
-            <!--                &lt;!&ndash;-->
-            <!--                    //    是不是 变量名-->
-            <!--                    @DbPrimaryKey(value = "tb_id", isAuto = true)-->
-            <!--                    @DbFiled("tb_id")-->
-            <!--                    public Integer id;-->
-            <!--                    @DbFiled("tb_name")-->
-            <!--                    public String name;//-->
-            <!--                &ndash;&gt;-->
-            <!--                create table if not exists tb_user ();-->
-
-            <!--            </sql_createTable>-->
-
         </createDb>
-
     </createVersion>
 
-    <updateStep versionFrom="V001" versionTo="V006">
+    <!-- V001,V002对应版本的app升级到 最新V007版本的升级逻辑-->
+    <updateStep versionFrom="V001,V002" versionTo="V007">
+        <!-- 对应数据升级逻辑，对应上面的 createDb 标签name ，如果有多对 createDb，这里也可执行多对 updateDb-->
         <updateDb name="hqk">
-            <sql_before>
+            <sql_before> <!-- 将V001,V002对应的旧表重命名备份-->
                 alter table tb_photo rename to bak_tb_photo;
             </sql_before>
-
-            <sql_after>
+            <sql_after>  <!-- 查询重命名后旧表数据，将对应数据添加至新表里-->
                 insert into tb_photo(tb_time,id, tb_path) select tb_time,tb_id,tb_path from bak_tb_photo;
             </sql_after>
-
-            <sql_after>
+            <sql_after><!-- 删除旧表备份-->
                 drop table if exists bak_tb_photo;
             </sql_after>
         </updateDb>
-
-
     </updateStep>
-
 
     <updateStep versionFrom="V003,V004,V005,V006" versionTo="V007">
         <updateDb name="hqk">
             <sql_before>
                 alter table tb_photo rename to bak_tb_photo;
             </sql_before>
-
             <sql_after>
-                insert into tb_photo(tb_time,id, tb_path) select tb_time,tb_id,tb_path from bak_tb_photo;
+                insert into tb_photo(tb_time,id, tb_path) select tb_time,tb_id,tb_path from
+                bak_tb_photo;
             </sql_after>
 
             <sql_after>

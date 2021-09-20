@@ -24,34 +24,37 @@ import java.util.List;
 public class UpdateManager {
     private File parentFile = ContUtils.parentFile;
     private File bakFile = ContUtils.bakFile;
-    //App  2年 记录 数据  用户
     private List<User> userList;
 
     public void startUpdateDb(Context context) {
+        //读取XML文件，将XML内容转化为对应对象
         UpdateDbXml updateDbxml = DomUtils.readDbXml(context);
-//    下载 上一个版本  --》下一个版本
+        //    下载 上一个版本  --》下一个版本  【注：在下载时，需要将旧版本、新版本以逗号的形式写入文件缓存】
         String[] versions = FileUtil.getLocalVersionInfo(new File(parentFile,
                 "update.txt"));
-        //拿到上一个版本
-        String lastVersion = versions[0];  //拿到当前版本
-        String thisVersion = versions[1];
+        String lastVersion = versions[0];//拿到上一个版本
+        String thisVersion = versions[1];//拿到当前版本
 
-        String userfile = ContUtils.sqliteDatabasePath;
+        //数据库File原地址
+        String userFile = ContUtils.sqliteDatabasePath;
+        //数据库File备份地址
         String user_bak = ContUtils.copySqliteDatabasePath;
-        FileUtil.CopySingleFile(userfile, user_bak);
+        //升级前，数据库File备份
+        FileUtil.CopySingleFile(userFile, user_bak);
+        //根据对应新旧版本号查询XML转化对象里面的脚本，得到对应升级脚本
         UpdateStep updateStep = DomUtils.findStepByVersion(updateDbxml, lastVersion, thisVersion);
         if (updateStep == null) {
             return;
         }
-
+        //拿到对应升级脚本
         List<UpdateDb> updateDbs = updateStep.getUpdateDbs();
         try {
-            //    第二步   将原始数据库中所有的表名 更改成 bak_表名(数据还在)
+            //将原始数据库中所有的表名 更改成 bak_表名(数据还在)
             executeBeforesSql(updateDbs);
-            // 第三步:检查新表，创建新表
+            //检查新表，创建新表
             CreateVersion createVersion = DomUtils.findCreateByVersion(updateDbxml, thisVersion);
             executeCreateVersion(createVersion);
-//          第四步  将原来bak_表名  的数据迁移到 新表中
+            //将原来bak_表名  的数据迁移到 新表中
             executeAftersSql(updateDbs);
         } catch (Exception e) {
             e.printStackTrace();
